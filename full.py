@@ -1,9 +1,25 @@
-from flask import Flask, send_file, Response, request
+from flask import Flask, send_file, Response, request, jsonify
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
 import os
 import threading
 import time
+from dotenv import load_dotenv
+from elevenlabs.client import ElevenLabs
+from elevenlabs import play
+
+# Load environment variables from .env file
+load_dotenv("./api.env")
+
+# Debug: Print the API key to verify it's being loaded
+api_key = os.getenv("ELEVENLABS_API_KEY")
+print("API Key:", api_key)
+
+if not api_key:
+    raise ValueError("ELEVENLABS_API_KEY is not set in the .env file.")
+
+# Initialize the ElevenLabs client
+client = ElevenLabs(api_key=api_key)
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -74,6 +90,63 @@ def make_call():
         print(f"Call initiated successfully. Call SID: {call.sid}")
     except Exception as e:
         print(f"Failed to initiate call: {e}")
+
+@app.route("/generate-audio", methods=["POST"])
+def generate_audio():
+    # Get the text from the POST request body
+    data = request.json
+    if not data or "text" not in data:
+        return jsonify({"error": "Missing 'text' in request body"}), 400
+
+    text = data["text"]
+
+    try:
+        # Convert text to audio
+        audio = client.text_to_speech.convert(
+            text=text,
+            voice_id="JBFqnCBsd6RMkjVDRZzb",
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128",
+        )
+        print("Audio generated successfully.")
+    except Exception as e:
+        print("Error generating audio:", e)
+        return jsonify({"error": str(e)}), 500
+
+    # Save the audio to a file
+    output_file = "./output.mp3"  # Name of the output file
+
+    # Ensure the file is truncated (optional, since 'wb' mode already does this)
+    if os.path.exists(output_file):
+        os.remove(output_file)  # Delete the file if it exists
+
+    try:
+        with open(output_file, "wb") as f:
+            # Collect all data from the generator and write it to the file
+            for chunk in audio:
+                f.write(chunk)
+        print(f"Audio saved successfully as {output_file}.")
+    except Exception as e:
+        print("Error saving audio file:", e)
+        return jsonify({"error": str(e)}), 500
+
+    # Play the generated audio (optional)
+    try:
+        # Reset the generator (if needed) before playing
+        audio = client.text_to_speech.convert(
+            text=text,
+            voice_id="JBFqnCBsd6RMkjVDRZzb",
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128",
+        )
+        play(audio)
+        print("Audio played successfully.")
+    except Exception as e:
+        print("Error playing audio:", e)
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"message": "Audio generated and saved successfully", "file": output_file}), 200
+
 
 if __name__ == '__main__':
     # Start the call in a separate thread
