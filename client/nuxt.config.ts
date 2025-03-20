@@ -1,5 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
+  app: {
+    head: {
+      title: 'Title',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+    },
+  },
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
@@ -14,4 +22,5 @@ export default defineNuxtConfig({
       stylistic: { indent: 2, quotes: 'single', semi: false },
     },
   },
+  css: ["bootstrap/dist/css/bootstrap.min.css"]
 })
