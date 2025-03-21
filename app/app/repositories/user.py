@@ -1,4 +1,4 @@
-from app.models.user import User
+from app.models.user import User, Customer
 from app import db
 
 class UserRepository:
@@ -23,3 +23,20 @@ class UserRepository:
         user = self.model.query.get(id)
         db.session.delete(user)
         db.session.commit()
+
+class CustomerRepository:
+    def __init__(self):
+        self.model = Customer
+
+    def create(self, customer: Customer):       
+        db.session.add(customer)
+        db.session.commit()
+        return customer
+    
+    def delete(self, id):
+        customer = self.model.query.get(id)
+        db.session.delete(customer)
+        db.session.commit() 
+
+    def all(self):
+        return self.model.query.all()

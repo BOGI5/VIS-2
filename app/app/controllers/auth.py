@@ -4,10 +4,10 @@ from flask import render_template, redirect, url_for, session, request
 from flask_login import login_user, logout_user, login_required, current_user 
 import json
 from app import db
-from app.models.user import User
+from app.models.user import User, Customer
 from config import Config as Auth
 from app import app
-from app.repositories.user import UserRepository
+from app.repositories.user import UserRepository, CustomerRepository
 
 def get_google_auth(state=None, token=None):
     if token:
@@ -84,3 +84,20 @@ def callback():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/create_customer', methods=['POST'])
+def create_customer():
+    data = request.json
+    customer = Customer(first_name=data['first_name'], last_name=data['last_name'], phone=data['phone'], amount=data['amount'], family_status=data['family_status'], income=data['income'], egn=data['egn'], credit_expire=data['credit_expire'], address=data['address'], age=data['age'], job=data['job'], user_id=current_user.id)
+    CustomerRepository().create(customer)
+    return 'Customer created successfully!'
+
+@app.route('/customers')
+def customers():
+    customers = CustomerRepository().all()
+    return render_template('customers.html', customers=customers)
+
+@app.route('/delete_customer/<int:id>', methods=['DELETE'])
+def delete_customer(id):
+    CustomerRepository().delete(id)
+    return 'Customer deleted successfully!'
