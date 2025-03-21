@@ -3,6 +3,9 @@
       <h1 class="title">
         ВИС-2
       </h1>
+      <h2 class="title" style="font-size: 2em;">
+        Добавяне на клиент
+      </h2>
       <form
         class="contact-form row"
         @submit.prevent="handleSubmit"
@@ -155,9 +158,11 @@
             class="input-text js-input"
             type="text"
             required
+            @input="autoResize($event)"
           />
           <label
             class="label"
+            :style="{ bottom: `${labelOffset}px` }"
             for="job"
           >Работа</label>
         </div>
@@ -187,6 +192,20 @@
     age: '',
     job: '',
   })
+
+  const labelOffset = ref(11)
+
+  function adjustLabel() {
+  const textarea = form.value.job
+  if (!textarea) return
+
+  textarea.style.height = 'auto'
+  textarea.style.height = `${textarea.scrollHeight}px`
+
+  const lineHeight = 26
+  const rows = Math.floor(textarea.scrollHeight / lineHeight)
+  labelOffset.value = rows * lineHeight + 11
+}
 
   const responseMessage = ref('')
 
@@ -218,6 +237,12 @@
       console.error('Error submitting form:', error)
       responseMessage.value = 'Възникна грешка при изпращането на формата.'
     }
+  }
+
+  function autoResize(event) {
+     const textarea = event.target;
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
   }
   </script>
 
@@ -280,11 +305,14 @@
   .contact-form .input-text.not-empty + .label {
     -webkit-transform: translateY(-24px);
             transform: translateY(-24px);
+              font-size: 14px;
+  top: -12px;
   }
   .contact-form .label {
     position: absolute;
     left: 20px;
     bottom: 11px;
+      top: 5px;
     font-size: 18px;
     line-height: 26px;
     font-weight: 400;
