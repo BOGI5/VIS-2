@@ -168,10 +168,6 @@ Before deploying this system:
 - **Agent not responding properly**: Review Azure OpenAI configuration and ensure the model is available
 - **Database errors**: Check file permissions for SQLite database
 
-## License
-
-[Include appropriate license information]
-
 ## Disclaimer
 
 This system is designed for legitimate debt collection activities. Use responsibly and in accordance with all applicable laws and regulations.
