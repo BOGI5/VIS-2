@@ -94,9 +94,7 @@ You can use the `env_example.txt` file as a template.
 
 ### 5. Database Initialization
 
-The SQLite database will be automatically initialized when running the application for the first time. Default credentials:
-- Username: `admin`
-- Password: `admin123`
+The SQLite database will be automatically initialized when running the application for the first time.
 
 ### 6. Public URL Setup
 
@@ -128,18 +126,17 @@ The web application will be available at `http://localhost:5000`.
 
 ## Agent Behavior Configuration
 
-The agent's behavior is defined in `agent/instructions.txt`. You can modify this file to change how the agent interacts with debtors. The current configuration makes the agent:
+The agent's behavior is defined in `agent/instructions1.txt`. You can modify this file to change how the agent interacts with debtors. The current configuration makes the agent:
 
 - Introduce itself as Vasil Iliev from VIS-2
 - Be persistent about collecting the debt
 - Explain the current credit situation and consequences of non-payment
 - Offer payment options
-- Respond aggressively to aggressive clients
 
 ## Customization
 
 - **Voice Selection**: Change the `VOICE_ID` in the `.env` file to use a different voice from ElevenLabs
-- **Agent Personality**: Modify `instructions.txt` to change the agent's approach and tone
+- **Agent Personality**: Modify `instructions1.txt` to change the agent's approach and tone
 - **Introduction Message**: Edit `introduction.txt` to change the initial greeting
 
 ## Security Considerations
@@ -167,7 +164,3 @@ Before deploying this system:
 - **Voice synthesis issues**: Check ElevenLabs API key and voice ID
 - **Agent not responding properly**: Review Azure OpenAI configuration and ensure the model is available
 - **Database errors**: Check file permissions for SQLite database
-
-## Disclaimer
-
-This system is designed for legitimate debt collection activities. Use responsibly and in accordance with all applicable laws and regulations.
