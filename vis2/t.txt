@@ -1,0 +1,3 @@
+INFO_FILE = "agent/info.json"
+    with open(INFO_FILE, 'w') as f:
+        json.dump(new_entry, f, indent=4)
